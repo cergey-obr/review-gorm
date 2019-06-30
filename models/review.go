@@ -3,6 +3,7 @@ package models
 type Review struct {
 	Id        uint    `gorm:"primary_key" json:"id"`
 	Title     string  `json:"title"`
+	CreatedAt string  `json:"created_at"`
 	ProductId int     `json:"productId"`
 	StatusId  int     `json:"statusId"`
 	AuthorId  int     `json:"-"`
