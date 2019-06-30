@@ -15,7 +15,7 @@ type Review struct {
 	Fit       int     `json:"fit"`
 	Style     int     `json:"style"`
 	Author    Author  `gorm:"foreignKey:AuthorId" json:"author"`
-	Photos    []Photo `gorm:"foreignkey:ReviewId" json:"photos"`
+	Photos    []Photo `gorm:"foreignKey:ReviewId" json:"photos"`
 }
 
 type ProductReviews struct {
