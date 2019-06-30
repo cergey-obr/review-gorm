@@ -38,30 +38,16 @@ func GetProductReviews(website int, productIds []string, limit int, offset int) 
 	db.LogMode(true)
 	db.SingularTable(true)
 
-	rows, err := db.
-		Model(&models.Review{}).
+	var reviews []models.Review
+	db.
 		Preload("Author").
 		Preload("Photos").
-		Where("product_id IN (?)", productIds).
 		Where("website = ?", website).
 		Limit(limit).
 		Offset(offset).
-		Rows()
+		Find(&reviews)
 
-	if err != nil {
-		panic(err.Error())
-	}
-
-	defer rows.Close()
-
-	var reviews []models.Review
 	var productReviews models.ProductReviews
-	for rows.Next() {
-		var review models.Review
-		_ = db.ScanRows(rows, &review)
-		reviews = append(reviews, review)
-	}
-
 	var totals models.Totals
 	db.
 		Model(models.Review{}).
