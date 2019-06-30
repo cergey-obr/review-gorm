@@ -17,3 +17,14 @@ type Review struct {
 	Author    Author  `gorm:"foreignKey:AuthorId" json:"author"`
 	Photos    []Photo `gorm:"foreignkey:ReviewId" json:"photos"`
 }
+
+type ProductReviews struct {
+	Items  []Review `json:"items"`
+	Totals Totals   `json:"totals"`
+}
+
+type Totals struct {
+	Value  string `json:"value"`
+	Count  string `json:"count"`
+	Intval int    `json:"intval"`
+}
