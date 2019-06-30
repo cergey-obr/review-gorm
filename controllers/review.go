@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/labstack/echo"
 	"net/http"
 	"review-gorm/repository"
@@ -13,8 +12,16 @@ func GetReviews(c echo.Context) error {
 	limit, _ := strconv.Atoi(c.QueryParam("limit"))
 	offset, _ := strconv.Atoi(c.QueryParam("offset"))
 
-	filter := c.QueryParam("filter")
-	fmt.Println(filter)
-
 	return c.JSON(http.StatusOK, repository.GetAllReviews(website, limit, offset))
+}
+
+func GetProductReviews(c echo.Context) error {
+	params := c.QueryParams()
+
+	website, _ := strconv.Atoi(c.Param("website"))
+	productIds := params["productId[]"]
+	limit, _ := strconv.Atoi(params.Get("limit"))
+	offset, _ := strconv.Atoi(params.Get("offset"))
+
+	return c.JSON(http.StatusOK, repository.GetProductReviews(website, productIds, limit, offset))
 }
