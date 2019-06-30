@@ -7,13 +7,13 @@ import (
 )
 
 func GetAllReviews(website int, limit int, offset int) []models.Review {
-	db, err := gorm.Open("mysql", "go:123456@tcp(127.0.0.1:3306)/review")
+	db, err := gorm.Open("mysql", "root:123456@tcp(localhost:3306)/review")
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
 
-	//db.LogMode(true)
+	db.LogMode(true)
 	db.SingularTable(true)
 
 	var reviews []models.Review
