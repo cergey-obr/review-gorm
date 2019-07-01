@@ -6,18 +6,26 @@ import (
 	"review-gorm/models"
 )
 
-func GetAllReviews(website int, limit int, offset int) []models.Review {
-	db, err := gorm.Open("mysql", "root:123456@tcp(localhost:3306)/review")
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
+var DBCon *gorm.DB
 
-	db.LogMode(true)
-	db.SingularTable(true)
+func init() {
+	DBCon = connect()
+}
+func connect() *gorm.DB {
+	db, _ := gorm.Open("mysql", "root:123456@tcp(localhost:3307)/review")
+	return db
+}
+
+func GetAllReviews(website int, limit int, offset int) []models.Review {
+	if limit == 0 {
+		limit = 10
+	}
+
+	DBCon.LogMode(true)
+	DBCon.SingularTable(true)
 
 	var reviews []models.Review
-	db.
+	DBCon.
 		Preload("Author").
 		Preload("Photos").
 		Where("website = ?", website).
@@ -30,17 +38,11 @@ func GetAllReviews(website int, limit int, offset int) []models.Review {
 }
 
 func GetProductReviews(website int, productIds []string, limit int, offset int) models.ProductReviews {
-	db, err := gorm.Open("mysql", "root:123456@tcp(localhost:3306)/review")
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-
-	db.LogMode(true)
-	db.SingularTable(true)
+	DBCon.LogMode(true)
+	DBCon.SingularTable(true)
 
 	var reviews []models.Review
-	db.
+	DBCon.
 		Preload("Author").
 		Preload("Photos").
 		Where("product_id IN (?)", productIds).
@@ -52,7 +54,7 @@ func GetProductReviews(website int, productIds []string, limit int, offset int) 
 
 	var productReviews models.ProductReviews
 	var totals models.Totals
-	db.
+	DBCon.
 		Model(models.Review{}).
 		Select("AVG(overall) AS value, COUNT(id) AS count, ROUND(AVG(overall)) AS intval").
 		Where("product_id IN (?)", productIds).
