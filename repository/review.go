@@ -1,31 +1,14 @@
 package repository
 
-import (
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"review-gorm/models"
-)
-
-var DBCon *gorm.DB
-
-func init() {
-	DBCon = connect()
-}
-func connect() *gorm.DB {
-	db, _ := gorm.Open("mysql", "root:123456@tcp(localhost:3307)/review")
-	return db
-}
+import "review-gorm/models"
 
 func GetAllReviews(website int, limit int, offset int) []models.Review {
 	if limit == 0 {
 		limit = 10
 	}
 
-	DBCon.LogMode(true)
-	DBCon.SingularTable(true)
-
 	var reviews []models.Review
-	DBCon.
+	db.
 		Preload("Author").
 		Preload("Photos").
 		Where("website = ?", website).
@@ -38,11 +21,8 @@ func GetAllReviews(website int, limit int, offset int) []models.Review {
 }
 
 func GetProductReviews(website int, productIds []string, limit int, offset int) models.ProductReviews {
-	DBCon.LogMode(true)
-	DBCon.SingularTable(true)
-
 	var reviews []models.Review
-	DBCon.
+	db.
 		Preload("Author").
 		Preload("Photos").
 		Where("product_id IN (?)", productIds).
@@ -54,7 +34,7 @@ func GetProductReviews(website int, productIds []string, limit int, offset int) 
 
 	var productReviews models.ProductReviews
 	var totals models.Totals
-	DBCon.
+	db.
 		Model(models.Review{}).
 		Select("AVG(overall) AS value, COUNT(id) AS count, ROUND(AVG(overall)) AS intval").
 		Where("product_id IN (?)", productIds).
