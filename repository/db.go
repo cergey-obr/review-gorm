@@ -7,10 +7,10 @@ import (
 
 var db *gorm.DB
 
-func InitDatabase() {
+func InitDatabase(datasource string) {
 	var err error
 
-	db, err = gorm.Open("mysql", "root:123456@tcp(localhost:3307)/review")
+	db, err = gorm.Open("mysql", datasource)
 	if err != nil {
 		panic(err.Error())
 	}
