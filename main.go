@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo"
 	"os"
 	"review-gorm/controllers"
+	"review-gorm/middleware"
 	"review-gorm/repository"
 )
 
@@ -17,6 +18,8 @@ func main() {
 	}
 
 	repository.InitDatabase(os.Getenv("DATABASE"))
+
+	e.Use(middleware.AddFilters)
 
 	e.GET("/:website/review", controllers.GetReviews)
 	e.GET("/:website/review/product", controllers.GetProductReviews)
