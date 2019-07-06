@@ -2,17 +2,17 @@ package repository
 
 import "review-gorm/models"
 
-func GetReviews(website int, productIds []string, limit int, offset int) []models.Review {
+func GetReviews(filters *models.Filters) []models.Review {
 	tx := db.
 		Preload("Author").
 		Preload("Photos").
-		Where("website = ?", website).
-		Limit(limit).
-		Offset(offset).
+		Where("website = ?", filters.Website).
+		Limit(filters.Limit).
+		Offset(filters.Offset).
 		Order("id")
 
-	if len(productIds) > 0 {
-		tx.Where("product_id IN (?)", productIds)
+	if len(filters.ProductIds) > 0 {
+		tx.Where("product_id IN (?)", filters.ProductIds)
 	}
 
 	var reviews []models.Review
@@ -21,19 +21,19 @@ func GetReviews(website int, productIds []string, limit int, offset int) []model
 	return reviews
 }
 
-func GetProductReviews(website int, productIds []string, limit int, offset int) models.ProductReviews {
+func GetProductReviews(filters *models.Filters) models.ProductReviews {
 	var totals models.Totals
 	db.
 		Model(models.Review{}).
 		Select("AVG(overall) AS value, COUNT(id) AS count, ROUND(AVG(overall)) AS intval").
-		Where("product_id IN (?)", productIds).
-		Where("website = ?", website).
-		Limit(limit).
-		Offset(offset).
+		Where("product_id IN (?)", filters.ProductIds).
+		Where("website = ?", filters.Website).
+		Limit(filters.Limit).
+		Offset(filters.Offset).
 		Scan(&totals)
 
 	return models.ProductReviews{
-		Items:  GetReviews(website, productIds, limit, offset),
+		Items:  GetReviews(filters),
 		Totals: totals,
 	}
 }
