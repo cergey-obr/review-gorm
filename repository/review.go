@@ -2,37 +2,26 @@ package repository
 
 import "review-gorm/models"
 
-func GetAllReviews(website int, limit int, offset int) []models.Review {
-	if limit == 0 {
-		limit = 10
-	}
-
-	var reviews []models.Review
-	db.
+func GetReviews(website int, productIds []string, limit int, offset int) []models.Review {
+	tx := db.
 		Preload("Author").
 		Preload("Photos").
 		Where("website = ?", website).
 		Limit(limit).
 		Offset(offset).
-		Order("id").
-		Find(&reviews)
+		Order("id")
+
+	if len(productIds) > 0 {
+		tx.Where("product_id IN (?)", productIds)
+	}
+
+	var reviews []models.Review
+	tx.Find(&reviews)
 
 	return reviews
 }
 
 func GetProductReviews(website int, productIds []string, limit int, offset int) models.ProductReviews {
-	var reviews []models.Review
-	db.
-		Preload("Author").
-		Preload("Photos").
-		Where("product_id IN (?)", productIds).
-		Where("website = ?", website).
-		Limit(limit).
-		Offset(offset).
-		Order("id").
-		Find(&reviews)
-
-	var productReviews models.ProductReviews
 	var totals models.Totals
 	db.
 		Model(models.Review{}).
@@ -43,8 +32,8 @@ func GetProductReviews(website int, productIds []string, limit int, offset int) 
 		Offset(offset).
 		Scan(&totals)
 
-	productReviews.Items = reviews
-	productReviews.Totals = totals
-
-	return productReviews
+	return models.ProductReviews{
+		Items:  GetReviews(website, productIds, limit, offset),
+		Totals: totals,
+	}
 }

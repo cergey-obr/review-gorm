@@ -8,11 +8,12 @@ import (
 )
 
 func GetReviews(c echo.Context) error {
+	productIds := make([]string, 0)
 	website, _ := strconv.Atoi(c.Param("website"))
 	limit, _ := strconv.Atoi(c.QueryParam("limit"))
 	offset, _ := strconv.Atoi(c.QueryParam("offset"))
 
-	return c.JSON(http.StatusOK, repository.GetAllReviews(website, limit, offset))
+	return c.JSON(http.StatusOK, repository.GetReviews(website, productIds, limit, offset))
 }
 
 func GetProductReviews(c echo.Context) error {
