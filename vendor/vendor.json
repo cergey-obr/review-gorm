@@ -27,6 +27,12 @@
 			"revisionTime": "2019-06-03T04:28:36Z"
 		},
 		{
+			"checksumSHA1": "mu35XXlY1BmBIH8up31qq04/CZY=",
+			"path": "github.com/joho/godotenv",
+			"revision": "b09de681dcaff3eaeafcc62ee1f9f622a0c32b8b",
+			"revisionTime": "2019-10-20T20:25:22Z"
+		},
+		{
 			"checksumSHA1": "Onh3jgGpQU+yHG1SBT/4MS9g7mI=",
 			"path": "github.com/labstack/echo",
 			"revision": "75620e676752baf3b159768535312cf36db22bdd",
